@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بناء المستقبل - محاكي الأوتوكاد الهندسي | تصميم: علي عمر علي باشحبل</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cad-bg: #030812;
+            --cad-grid: rgba(0, 229, 255, 0.05);
+            --cad-line: #00e5ff;
+            --cad-accent: #ffb300;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #eef2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 8, 18, 0.98);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border-top: 5px solid var(--cad-accent);
+        }
+
+        .login-card h2 {
+            margin-bottom: 5px;
+            color: #030812;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            background-color: var(--cad-accent);
+            color: #030812;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #ffa000;
+        }
+
+        #app-container {
+            display: none;
+        }
+
+        header {
+            background-color: var(--cad-bg);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--cad-accent);
+        }
+
+        header h1 {
+            font-size: 22px;
+            color: var(--cad-line);
+        }
+
+        .main-content {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #030812;
+            border-right: 4px solid var(--cad-accent);
+            padding-right: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+        }
+
+        @media(max-width: 950px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .basics-list {
+            list-style: none;
+        }
+
+        .basics-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-right: 20px;
+            font-size: 13.5px;
+        }
+
+        .basics-list li::before {
+            content: "▪";
+            color: var(--cad-accent);
+            position: absolute;
+            right: 0;
+        }
+
+        .autocad-viewport {
+            background-color: var(--cad-bg);
+            color: var(--cad-line);
+            padding: 25px;
+            border-radius: 6px;
+            font-family: 'Cairo', 'Courier New', Courier, monospace;
+            font-size: 13px;
+            min-height: 480px;
+            max-height: 600px;
+            overflow: auto;
+            border: 2px solid #1a365d;
+            box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.08);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            position: relative;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .autocad-viewport::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(var(--cad-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--cad-grid) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        .loading {
+            color: var(--cad-accent);
+            font-style: italic;
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        footer {
+            background-color: var(--cad-bg);
+            color: #8a99ad;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 2px solid #1a365d;
+            font-size: 13px;
+        }
+
+        footer span {
+            color: var(--cad-accent);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>بناء المستقبل</h2>
+            <p style="margin-bottom: 20px; color: #666; font-size: 13px;">منصة الهندسة المدنية والمعمارية</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">اسم الطالب:</label>
+                    <input type="text" id="username" required placeholder="أدخل اسمك الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة السر:</label>
+                    <input type="password" id="password" required placeholder="أدخل كلمة المرور">
+                </div>
+                <button type="submit" class="btn">دخول لوحة التحكم</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="app-container">
+        <header>
+            <h1>بناء المستقبل | AutoCAD Workspace</h1>
+            <div>
+                المشرف الهندسي: <span id="student-name-display" style="font-weight: bold; color: var(--cad-accent);"></span> | 
+                <a href="#" onclick="location.reload()" style="color: #fff; text-decoration: underline; margin-right: 15px; font-size: 13px;">خروج</a>
+            </div>
+        </header>
+
+        <div class="main-content">
+            
+            <div class="card">
+                <h3 class="section-title">التخطيط المعماري وعزل الخدمات (مطبخ وحمام)</h3>
+                <ul class="basics-list">
+                    <li><strong>الفصل الوظيفي التام:</strong> عزل مناطق الخدمات الحساسة (المطبخ والحمام) عن غرف النوم وصالات الاستقبال لضمان الخصوصية والصحة العامة.</li>
+                    <li><strong>ممرات التوزيع (Corridors):</strong> تصميم ممر رئيسي يربط بين كافة غرف الشقة ويمنع التداخل المباشر في الحركة.</li>
+                    <li><strong>محاور الأبواب الهندسية:</strong> توجيه فتحات الأبواب للداخل بطريقة تضمن استغلال المساحات وتجنب التعارض.</li>
+                </ul>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="section-title">مولد المخططات الهندسية (AutoCAD Engine)</h3>
+                    <p style="margin-bottom: 15px; font-size: 13px; color: #666;">اختر تصميم المبنى لتوليد مسقط أفقى هندسي دقيق مع فصل الخدمات ومداخل الأبواب:</p>
+                    
+                    <form id="aiForm" onsubmit="generateBlueprint(event)">
+                        <div class="form-group">
+                            <label for="projectType">اختر المخطط المطلوب:</label>
+                            <select id="projectType">
+                                <option value="2rooms">شقة (2 غرف + صالة + مطبخ مستقل + حمام مستقل + ممر)</option>
+                                <option value="3rooms">شقة عائلية (3 غرف + صالة ضيوف + مطبخ + 2 حمام منفصل)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dimensions">إجمالي أبعاد الموقع:</label>
+                            <input type="text" id="dimensions" required placeholder="مثال: 14 متر × 10 متر">
+                        </div>
+                        <div class="form-group">
+                            <label for="loads">الأحمال الإنشائية:</label>
+                            <input type="text" id="loads" required placeholder="مثال: أحمال حية 2.5 طن/م²">
+                        </div>
+                        <button type="submit" class="btn">تنفيذ الرسم الهندسي في الأوتوكاد</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3 class="section-title">شاشة عمل الأوتوكاد (Model Space View)</h3>
+                    <div id="blueprintOutput" class="autocad-viewport">
+أمر النظام: فتح مشروع جديد (OPEN_PROJECT)
+حقوق الملكية الفكرية: مسجل باسم المهندس / علي عمر علي باشحبل
+الحالة: جاهز للتنفيذ
+> يرجى إدخال بيانات المشروع والضغط على زر "تنفيذ الرسم الهندسي" لعرض المسقط الأفقي المفصل بالكامل باللغة العربية...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>جميع الحقوق المحفوظة © 2026 | تم تطوير وتصميم النظام الهندسي بواسطة: <span>علي عمر علي باشحبل</span></p>
+        </footer>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            document.getElementById('student-name-display').textContent = username;
+        }
+
+        function generateBlueprint(event) {
+            event.preventDefault();
+            const type = document.getElementById('projectType').value;
+            const dimensions = document.getElementById('dimensions').value;
+            const loads = document.getElementById('loads').value;
+            const outputDiv = document.getElementById('blueprintOutput');
+
+            outputDiv.innerHTML = `<div class="loading">برمجية الأوتوكاد (تصميم: علي عمر علي باشحبل): [جارٍ إعادة توليد مساحة العمل...] يتم رسم الجدران، فصل المطبخ والحمام، وضبط مسارات الأبواب باللغة العربية بدقة معمارية...</div>`;
+
+            setTimeout(() => {
+                let cadDrawing = "";
+
+                if(type === '2rooms') {
+                    cadDrawing = `===================================================================
+رسم أوتوكاد هندسي: شقة سكنية (2 غرف) | بمقياس رسم: 1:100 | الأبعاد: ${dimensions}
+تصميم وهندسة: علي عمر علي باشحبل (جميع الحقوق محفوظة)
+===================================================================
+
+  +-------------------------+-------------------------+
+  |                         |                         |
+  |       غرفة نوم (1)      |       غرفة نوم (2)      |
+  |     [ 4.0 متر × 3.5 متر ]  |     [ 4.0 متر × 3.5 متر ]  |
+  |                         |                         |
+  +-----[ باب عرض 0.9م ]----+-----[ باب عرض 0.9م ]----+
+  |         الحمام          |         المطبخ          |
+  |     (خدمات مستقلة تماماً) |     (خدمات مستقلة تماماً) |
+  |     [ 2.2 متر × 2.0 متر ]  |     [ 3.0 متر × 2.5 متر ]  |
+  +-----[ باب عرض 0.8م ]----+-----[ باب عرض 0.8م ]----+
+  |                                                   |
+  |             ممر التوزيع المركزي (Corridor)         |
+  +-----------------------------------------+---------+
+  |                                         |         |
+  |             صالة المعيشة والضيوف         |  المدخل  |
+  |             [ 6.0 متر × 4.5 متر ]       | الرئيسي  |
+  |                                         | [ باب ] |
+  +-----------------------------------------+---------+
+
+--- [ خصائص الطبقات والمواصفات الفنية - Layer Properties ] ---------
+ * إشراف وتصميم الهندسي     : علي عمر علي باشحبل
+ * الأحمال الإنشائية التصميمية : ${loads}
+ * المناطق الرطبة والخدمات    : تم فصل المطبخ والحمام في قطاع معزول تماماً عن الغرف وصالة الاستقبال مع شبكة صرف مستقلة.
+ * توزيع الأبواب واتجاهاتها    : باب الدخول الرئيسي (1.0 متر)، غرف النوم (0.9 متر)، المطبخ والحمام (0.8 متر).
+`;
+                } else {
+                    cadDrawing = `===================================================================
+رسم أوتوكاد هندسي: شقة عائلية (3 غرف) | بمقياس رسم: 1:100 | الأبعاد: ${dimensions}
+تصميم وهندسة: علي عمر علي باشحبل (جميع الحقوق محفوظة)
+===================================================================
+
+  +--------------+--------------+---------------------+
+  |              |              |                     |
+  |  الجناح الرئيسي|  غرفة نوم (2) |     غرفة نوم (3)     |
+  | [ 4.0 × 4.0م ] | [ 3.5 × 3.0م ] |   [ 3.5 متر × 3.0م ] |
+  +---[ باب ]----+---[ باب ]----+-----[ باب ]---------+
+  |  الحمام الرئيسي| حمام الضيوف  |       المطبخ          |
+  | (خدمات خاصة) | (خدمات عامة) |    (مطبخ مستقل)    |
+  | [ 2.5 × 2.0م ] | [ 2.0 × 2.0م ] |    [ 3.5 متر × 3.0م ] |
+  +--------------+--------------+-----[ باب ]---------+
+  |                                                   |
+  |             ممر التوزيع المركزي (Distribution Corridor)    |
+  +-----------------------------------------+---------+
+  |                                         |         |
+  |            صالة الاستقبال الكبرى        |  المدخل  |
+  |             [ 7.0 متر × 4.5 متر ]       | الرئيسي  |
+  |                                         | [ باب ] |
+  +-----------------------------------------+---------+
+
+--- [ خصائص الطبقات والمواصفات الفنية - Layer Properties ] ---------
+ * إشراف وتصميم الهندسي     : علي عمر علي باشحبل
+ * الأحمال الإنشائية التصميمية : ${loads}
+ * المناطق الرطبة والخدمات    : عزل تام للكتلة الخدمية (المطبخ وعدد 2 حمام) وابعادها عن مسارات غرف النوم.
+ * توزيع الأبواب واتجاهاتها    : تم اعتماد مسارات حركة مريحة وفتحات أبواب دقيقة ومطابقة للكود الهندسي.
+`;
+                }
+
+                outputDiv.textContent = cadDrawing;
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
